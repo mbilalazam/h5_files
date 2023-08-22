@@ -6,3 +6,5 @@ https://portal.nersc.gov/project/dune/data/2x2/simulation/productions/MiniRun3_1
 
 MiniRun4 RHC Files
 https://github.com/DUNE/2x2_sim/wiki/MiniRun4-file-locations
+
+My Directory /dune/app/users/mazam/working_area/dunendlar_multiplicity/bilal_work/inProgress/MiniRun3.1_FHC
