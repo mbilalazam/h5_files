@@ -9,3 +9,11 @@ https://github.com/DUNE/2x2_sim/wiki/MiniRun4-file-locations
 
 ## My Directory 
 cd /dune/app/users/mazam/working_area/dunendlar_multiplicity/bilal_work/inProgress/MiniRun3.1_FHC
+
+## To create python files
+gedit name.py
+
+## To run python files
+python name.py
+
+
