@@ -7,6 +7,10 @@ https://portal.nersc.gov/project/dune/data/2x2/simulation/productions/MiniRun3_1
 ## MiniRun4 RHC Files
 https://github.com/DUNE/2x2_sim/wiki/MiniRun4-file-locations
 
+## To download multiple files from the MiniRun3.1 FHC link
+wget https://portal.nersc.gov/project/dune/data/2x2/simulation/productions/MicroRun3.1_1E18_FHC/MicroRun3.1_1E18_FHC.flow/FLOW/MicroRun3.1_1E18_FHC.flow.0000{0..11}.FLOW.h5
+
+
 ## My Directory 
 cd /dune/app/users/mazam/working_area/dunendlar_multiplicity/bilal_work/inProgress/MiniRun3.1_FHC
 
