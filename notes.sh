@@ -11,6 +11,8 @@ cd /pnfs/dune/tape_backed/users/mkramer/prod/MiniRun4/MiniRun4_1E19_RHC/MiniRun4
 ## To download multiple files from the MiniRun3.1 FHC link
 wget https://portal.nersc.gov/project/dune/data/2x2/simulation/productions/MicroRun3.1_1E18_FHC/MicroRun3.1_1E18_FHC.flow/FLOW/MicroRun3.1_1E18_FHC.flow.0000{0..11}.FLOW.h5
 
+## To download multiple files from the MiniRun4 RHC link
+wget https://portal.nersc.gov/project/dune/data/2x2/simulation/productions/MiniRun4_1E19_RHC/MiniRun4_1E19_RHC.flow/FLOW/MiniRun4_1E19_RHC.flow.0000{0..11}.FLOW.h5
 
 ## My Directory 
 cd /dune/app/users/mazam/working_area/dunendlar_multiplicity/bilal_work/inProgress/MiniRun3.1_FHC
