@@ -12,12 +12,10 @@ def create_stacked_histogram(filenames, dataset_name):
     enu_values_by_type = {itype: [] for itype in interaction_types}
     counts = {itype: 0 for itype in interaction_types}
 
-    # Loop through each file to extract data
     for idx, filename in enumerate(filenames, 1):
         print(f"File {idx}/{len(filenames)}: {filename.split('/')[-1]}")
         with h5py.File(filename, 'r') as f:
             data = f[dataset_name]
-
             isCC_mask = data['isCC'][()]
             
             for interaction_type in interaction_types:
@@ -39,9 +37,8 @@ def create_stacked_histogram(filenames, dataset_name):
     plt.ylabel('Number of CC Events')
     plt.title('Incident Neutrino Beam Energy (MiniRun4_RHC)')
     
-    # Manipulate x-axis ticks to not show 0 and 11
-    x_ticks = plt.xticks()[0]
-    plt.xticks(x_ticks[1:-1])  # This removes the first and last ticks, effectively removing 0 and 11
+    # Set the range for the x-axis
+    plt.xlim(1, 10)
     
     plt.legend()
     plt.tight_layout()
@@ -50,6 +47,6 @@ def create_stacked_histogram(filenames, dataset_name):
 
 if __name__ == "__main__":
     base_path = "/pnfs/dune/tape_backed/users/mkramer/prod/MiniRun4/MiniRun4_1E19_RHC/MiniRun4_1E19_RHC.flow/FLOW"
-    filenames = [f"{base_path}/MiniRun4_1E19_RHC.flow.{i:05}.FLOW.h5" for i in range(1024)]
+    filenames = [f"{base_path}/MiniRun4_1E19_RHC.flow.{i:05}.FLOW.h5" for i in range(50)]
     dataset_name = "/mc_truth/interactions/data"
     create_stacked_histogram(filenames, dataset_name)
