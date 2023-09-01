@@ -15,12 +15,18 @@ wget https://portal.nersc.gov/project/dune/data/2x2/simulation/productions/Micro
 wget https://portal.nersc.gov/project/dune/data/2x2/simulation/productions/MiniRun4_1E19_RHC/MiniRun4_1E19_RHC.flow/FLOW/MiniRun4_1E19_RHC.flow.0000{0..11}.FLOW.h5
 
 ## My Directory 
-cd /dune/app/users/mazam/working_area/dunendlar_multiplicity/bilal_work/inProgress/MiniRun3.1_FHC
+cd /dune/app/users/mazam/working_area/dunendlar_multiplicity/bilal_work/inProgress/MiniRun4_RHC
 
 ## To create python files
 gedit name.py
 
 ## To run python files
 python name.py
+
+## Size of all files in a directory in MBs
+ls -lh --block-size=M
+
+## Zip any file to reduce size
+tar czvf data.tar.gz data.txt
 
 
