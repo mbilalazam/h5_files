@@ -16,9 +16,9 @@ def create_stacked_histogram(filenames, dataset_name):
     counts = {itype: 0 for itype in interaction_types}
 
     # Define bounds
-    Xnegbound, Xposbound = -60, 60
-    Ynegbound, Yposbound = -328, 208
-    Znegbound, Zposbound = 1240, 1360
+    Xnegbound, Xposbound = -67, +67
+    Ynegbound, Yposbound = -328, -201
+    Znegbound, Zposbound = +1233, +1367
 
     for idx, filename in enumerate(filenames, 1):
         print(f"File {idx}/{len(filenames)}: {filename.split('/')[-1]}")
