@@ -18,7 +18,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 base_path = "/pnfs/dune/tape_backed/users/mkramer/prod/MiniRun4/MiniRun4_1E19_RHC/MiniRun4_1E19_RHC.flow/FLOW"
-filenames = [f"{base_path}/MiniRun4_1E19_RHC.flow.{i:05}.FLOW.h5" for i in range(2)]
+filenames = [f"{base_path}/MiniRun4_1E19_RHC.flow.{i:05}.FLOW.h5" for i in range(1024)]
 
 # Define bounds
 Xnegbound, Xposbound = -67, +67
@@ -35,12 +35,14 @@ for idx, file in enumerate(filenames):
         trajectories_data = f['/mc_truth/trajectories/data']
         interactions_data = f['/mc_truth/interactions/data']
 
-        # Extract vertex_id and isCC values from the interactions dataset
+        # Extract vertex_id, isCC values, and target values from the interactions dataset
         interactions_vertex_ids = interactions_data['vertex_id'][:]
         isCC_values = interactions_data['isCC'][:]
+        target_values = interactions_data['target'][:]
         
-        # Create a dictionary mapping vertex_id to its isCC value
+        # Create dictionaries mapping vertex_id to its isCC value and target value
         vertex_id_to_isCC = dict(zip(interactions_vertex_ids, isCC_values))
+        vertex_id_to_target = dict(zip(interactions_vertex_ids, target_values))
         
         traj_ids_stack = stack_data['traj_id'][:]
         part_statuses = stack_data['part_status'][:]
@@ -66,20 +68,21 @@ for idx, file in enumerate(filenames):
         
         # Group by vertex_id and append all part_pdg values
         for unique_vertex_id in np.unique(filtered_vertex_ids):
-            # Extract the isCC value for the current vertex_id from the dictionary
+            # Extract the isCC value and target value for the current vertex_id from the dictionaries
             isCC_for_vertex = vertex_id_to_isCC.get(unique_vertex_id, False)  # Default to False if vertex_id not found
+            target_for_vertex = vertex_id_to_target.get(unique_vertex_id, 0)  # Default to 0 if vertex_id not found
             
-            # Only process vertices where isCC is True
-            if isCC_for_vertex:
+            # Only process vertices where isCC is True and target is 18
+            if isCC_for_vertex and target_for_vertex == 18:
                 vertex_mask = filtered_vertex_ids == unique_vertex_id
                 pdg_array = filtered_part_pdgs[vertex_mask]
                 count = len(pdg_array)
                 pdg_counts.append(count)
                 
-                # Print the traj_id, part_pdg values, count, parent_id, and isCC value for the given vertex_id
+                # Print the traj_id, part_pdg values, count, parent_id, isCC value, and target value for the given vertex_id
                 traj_id_for_vertex = filtered_traj_ids[vertex_mask][0]
                 parent_id_for_traj = parent_ids_trajectories[np.where(traj_ids_trajectories == traj_id_for_vertex)[0][0]]
-                print(f"traj_id = {traj_id_for_vertex}; part_status = 1; vertex_id = {unique_vertex_id}; part_pdg = {list(pdg_array)}; count = {count}; parent_id = {parent_id_for_traj}; isCC = {isCC_for_vertex}")
+                #print(f"traj_id = {traj_id_for_vertex}; part_status = 1; vertex_id = {unique_vertex_id}; part_pdg = {list(pdg_array)}; count = {count}; parent_id = {parent_id_for_traj}; isCC = {isCC_for_vertex}; target = {target_for_vertex}")
 
 # Plot histogram
 entries = len(pdg_counts)
