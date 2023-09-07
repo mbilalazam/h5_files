@@ -57,9 +57,9 @@ plt.hist(pdg_counts, bins=range(1, 21), label=label_text)
 plt.xlabel('Multiplicity')
 plt.ylabel('Number of Events')
 plt.title('Multiplicity Distribution')
-plt.xticks(range(1, 21))  # Ensures that every integer between 1 and 20 inclusive is shown
-plt.xlim(1, 21)  # Set x-axis limits from 1 to 20
+plt.xticks(range(1, 21))  # Ensures that every integer between 1 and 21 inclusive is shown
+plt.xlim(1, 21)  # Set x-axis limits from 1 to 21
 plt.legend(loc='upper right')  # Add statbox to the histogram
-plt.savefig("mult_noBounds.png")
+plt.savefig("mult_noParentID_noBounds.png")
 plt.show()
 
