@@ -17,7 +17,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 base_path = "/pnfs/dune/tape_backed/users/mkramer/prod/MiniRun4/MiniRun4_1E19_RHC/MiniRun4_1E19_RHC.flow/FLOW"
-filenames = [f"{base_path}/MiniRun4_1E19_RHC.flow.{i:05}.FLOW.h5" for i in range(100)]
+filenames = [f"{base_path}/MiniRun4_1E19_RHC.flow.{i:05}.FLOW.h5" for i in range(1024)]
 
 # Define bounds
 Xnegbound, Xposbound = -67, +67
