@@ -1,6 +1,8 @@
 """
 Date: September 07, 2023
 Author: Muhammad Bilal Azam
+Description: This script processes particle interaction data to generate a histogram of multiplicity based on specific conditions and interaction modes.
+
 Conditions of the code:
 1. Loop over each file in the `filenames` list.
 2. Define spatial bounds for `xyz_start` values from the Trajectories dataset.
@@ -10,8 +12,10 @@ Conditions of the code:
 6. For each unique `vertex_id` in the filtered data, extract corresponding `part_pdg` values from the Stack dataset.
 7. Count the number of `part_pdg` values for each `vertex_id`.
 8. Only select events where `isCC` is `True` and `target` is 18 (liquid argon).
-9. Plot a histogram of the multiplicity using the counts of `part_pdg` values.
+9. Filter events based on specific interaction modes: QES, RES, DIS, COH, and MEC.
+10. Plot a stacked histogram of the multiplicity using the counts of `part_pdg` values for each interaction mode.
 """
+
 
 import h5py
 import numpy as np
