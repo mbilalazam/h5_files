@@ -11,11 +11,10 @@ Conditions of the code:
 5. Set `part_status` to 1 and filter data based on the valid `traj_ids` within the spatial bounds.
 6. For each unique `vertex_id` in the filtered data, extract corresponding `part_pdg` values from the Stack dataset.
 7. Count the number of `part_pdg` values for each `vertex_id`.
-8. Only select events where `isCC` is `True` and `target` is 18 (liquid argon).
+8. Only select events where `isCC` is `True`.
 9. Filter events based on specific interaction modes: QES, RES, DIS, COH, and MEC.
 10. Plot a stacked histogram of the multiplicity using the counts of `part_pdg` values for each interaction mode.
 """
-
 
 import h5py
 import numpy as np
@@ -41,15 +40,13 @@ for idx, file in enumerate(filenames):
         trajectories_data = f['/mc_truth/trajectories/data']
         interactions_data = f['/mc_truth/interactions/data']
 
-        # Extract vertex_id, interaction modes, isCC values, and target values from the interactions dataset
+        # Extract vertex_id, interaction modes, and isCC values from the interactions dataset
         interactions_vertex_ids = interactions_data['vertex_id'][:]
         isCC_values = interactions_data['isCC'][:]
-        target_values = interactions_data['target'][:]
         interaction_modes = {mode: interactions_data[mode][:] for mode in interaction_types}
         
-        # Create dictionaries mapping vertex_id to its isCC value, target value, and interaction modes
+        # Create dictionaries mapping vertex_id to its isCC value and interaction modes
         vertex_id_to_isCC = dict(zip(interactions_vertex_ids, isCC_values))
-        vertex_id_to_target = dict(zip(interactions_vertex_ids, target_values))
         vertex_id_to_modes = {mode: dict(zip(interactions_vertex_ids, interaction_modes[mode])) for mode in interaction_types}
         
         traj_ids_stack = stack_data['traj_id'][:]
@@ -76,13 +73,12 @@ for idx, file in enumerate(filenames):
         
         # Group by vertex_id and append all part_pdg values
         for unique_vertex_id in np.unique(filtered_vertex_ids):
-            # Extract the isCC value, target value, and interaction modes for the current vertex_id from the dictionaries
+            # Extract the isCC value and interaction modes for the current vertex_id from the dictionaries
             isCC_for_vertex = vertex_id_to_isCC.get(unique_vertex_id, False)  # Default to False if vertex_id not found
-            target_for_vertex = vertex_id_to_target.get(unique_vertex_id, 0)  # Default to 0 if vertex_id not found
             modes_for_vertex = {mode: vertex_id_to_modes[mode].get(unique_vertex_id, False) for mode in interaction_types}
             
-            # Only process vertices where isCC is True and target is 18
-            if isCC_for_vertex and target_for_vertex == 18:
+            # Only process vertices where isCC is True
+            if isCC_for_vertex:
                 vertex_mask = filtered_vertex_ids == unique_vertex_id
                 pdg_array = filtered_part_pdgs[vertex_mask]
                 count = len(pdg_array)
@@ -92,10 +88,10 @@ for idx, file in enumerate(filenames):
                     if modes_for_vertex[mode]:
                         pdg_counts_modes[mode].append(count)
                 
-                # Print the traj_id, part_pdg values, count, parent_id, isCC value, target value, and interaction modes for the given vertex_id
+                # Print the traj_id, part_pdg values, count, parent_id, isCC value, and interaction modes for the given vertex_id
                 traj_id_for_vertex = filtered_traj_ids[vertex_mask][0]
                 parent_id_for_traj = parent_ids_trajectories[np.where(traj_ids_trajectories == traj_id_for_vertex)[0][0]]
-                #print(f"traj_id = {traj_id_for_vertex}; part_status = 1; vertex_id = {unique_vertex_id}; part_pdg = {list(pdg_array)}; count = {count}; parent_id = {parent_id_for_traj}; isCC = {isCC_for_vertex}; target = {target_for_vertex}; modes = {[mode[2:] for mode in interaction_types if modes_for_vertex[mode]]}")
+                #print(f"traj_id = {traj_id_for_vertex}; part_status = 1; vertex_id = {unique_vertex_id}; part_pdg = {list(pdg_array)}; count = {count}; parent_id = {parent_id_for_traj}; isCC = {isCC_for_vertex}; modes = {[mode[2:] for mode in interaction_types if modes_for_vertex[mode]]}")
 
 # Plot stacked histogram
 bins = range(1, 21)
@@ -107,5 +103,6 @@ plt.title('Multiplicity Distribution (MiniRun4_RHC) by Interaction Modes')
 plt.xticks(bins)  # Ensures that every integer between 1 and 21 inclusive is shown
 plt.xlim(1, 21)  # Set x-axis limits from 1 to 21
 plt.legend(loc='upper right')  # Add legend to the histogram
-plt.savefig("mult_parentID_Bounds_CC_tgt18_mode.png")
+plt.savefig("mult_parentID_Bounds_CC_mode.png")
 plt.show()
+
