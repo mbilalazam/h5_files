@@ -18,15 +18,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 base_path = "/pnfs/dune/tape_backed/users/mkramer/prod/MiniRun4/MiniRun4_1E19_RHC/MiniRun4_1E19_RHC.flow/FLOW"
-filenames = [f"{base_path}/MiniRun4_1E19_RHC.flow.{i:05}.FLOW.h5" for i in range(100)]
+filenames = [f"{base_path}/MiniRun4_1E19_RHC.flow.{i:05}.FLOW.h5" for i in range(1024)]
 
 # Define bounds
 Xnegbound, Xposbound = -67, +67
 Ynegbound, Yposbound = -328, -201
 Znegbound, Zposbound = +1233, +1367
 
-interaction_modes = ['isQES', 'isMEC', 'isRES', 'isDIS', 'isCOH']
-pdg_counts_modes = {mode: [] for mode in interaction_modes}
+interaction_types = ['isQES', 'isRES', 'isDIS', 'isCOH', 'isMEC']
+colors = {'isQES': 'black', 'isMEC': 'magenta', 'isRES': 'red', 'isDIS': 'blue', 'isCOH': 'green'}
+pdg_counts_modes = {mode: [] for mode in interaction_types}
 
 for idx, file in enumerate(filenames):
     print(f"File {idx + 1}/{len(filenames)}: {file.split('/')[-1]}")
@@ -36,17 +37,17 @@ for idx, file in enumerate(filenames):
         trajectories_data = f['/mc_truth/trajectories/data']
         interactions_data = f['/mc_truth/interactions/data']
 
-        # Extract vertex_id, isCC values, target values, and interaction modes from the interactions dataset
+        # Extract vertex_id, interaction modes, isCC values, and target values from the interactions dataset
         interactions_vertex_ids = interactions_data['vertex_id'][:]
         isCC_values = interactions_data['isCC'][:]
         target_values = interactions_data['target'][:]
-        interaction_mode_values = {mode: interactions_data[mode][:] for mode in interaction_modes}
-
+        interaction_modes = {mode: interactions_data[mode][:] for mode in interaction_types}
+        
         # Create dictionaries mapping vertex_id to its isCC value, target value, and interaction modes
         vertex_id_to_isCC = dict(zip(interactions_vertex_ids, isCC_values))
         vertex_id_to_target = dict(zip(interactions_vertex_ids, target_values))
-        vertex_id_to_mode = {mode: dict(zip(interactions_vertex_ids, interaction_mode_values[mode])) for mode in interaction_modes}
-
+        vertex_id_to_modes = {mode: dict(zip(interactions_vertex_ids, interaction_modes[mode])) for mode in interaction_types}
+        
         traj_ids_stack = stack_data['traj_id'][:]
         part_statuses = stack_data['part_status'][:]
         vertex_ids = stack_data['vertex_id'][:]
@@ -72,28 +73,30 @@ for idx, file in enumerate(filenames):
         # Group by vertex_id and append all part_pdg values
         for unique_vertex_id in np.unique(filtered_vertex_ids):
             # Extract the isCC value, target value, and interaction modes for the current vertex_id from the dictionaries
-            isCC_for_vertex = vertex_id_to_isCC.get(unique_vertex_id, False)
-            target_for_vertex = vertex_id_to_target.get(unique_vertex_id, 0)
-            modes_for_vertex = {mode: vertex_id_to_mode[mode].get(unique_vertex_id, False) for mode in interaction_modes}
-
-            # Only process vertices where isCC is True, target is 18, and then filter based on interaction modes
+            isCC_for_vertex = vertex_id_to_isCC.get(unique_vertex_id, False)  # Default to False if vertex_id not found
+            target_for_vertex = vertex_id_to_target.get(unique_vertex_id, 0)  # Default to 0 if vertex_id not found
+            modes_for_vertex = {mode: vertex_id_to_modes[mode].get(unique_vertex_id, False) for mode in interaction_types}
+            
+            # Only process vertices where isCC is True and target is 18
             if isCC_for_vertex and target_for_vertex == 18:
-                for mode in interaction_modes:
+                vertex_mask = filtered_vertex_ids == unique_vertex_id
+                pdg_array = filtered_part_pdgs[vertex_mask]
+                count = len(pdg_array)
+                
+                # Append to the respective interaction mode's list if the mode is True for the vertex
+                for mode in interaction_types:
                     if modes_for_vertex[mode]:
-                        vertex_mask = filtered_vertex_ids == unique_vertex_id
-                        pdg_array = filtered_part_pdgs[vertex_mask]
-                        count = len(pdg_array)
                         pdg_counts_modes[mode].append(count)
-
-                        # Print the traj_id, part_pdg values, count, parent_id, isCC value, target value, and interaction modes for the given vertex_id
-                        traj_id_for_vertex = filtered_traj_ids[vertex_mask][0]
-                        parent_id_for_traj = parent_ids_trajectories[np.where(traj_ids_trajectories == traj_id_for_vertex)[0][0]]
-                        print(f"traj_id = {traj_id_for_vertex}; part_status = 1; vertex_id = {unique_vertex_id}; part_pdg = {list(pdg_array)}; count = {count}; parent_id = {parent_id_for_traj}; isCC = {isCC_for_vertex}; target = {target_for_vertex}; {'; '.join([f'{mode} = {modes_for_vertex[mode]}' for mode in interaction_modes])}")
-
+                
+                # Print the traj_id, part_pdg values, count, parent_id, isCC value, target value, and interaction modes for the given vertex_id
+                traj_id_for_vertex = filtered_traj_ids[vertex_mask][0]
+                parent_id_for_traj = parent_ids_trajectories[np.where(traj_ids_trajectories == traj_id_for_vertex)[0][0]]
+                #print(f"traj_id = {traj_id_for_vertex}; part_status = 1; vertex_id = {unique_vertex_id}; part_pdg = {list(pdg_array)}; count = {count}; parent_id = {parent_id_for_traj}; isCC = {isCC_for_vertex}; target = {target_for_vertex}; modes = {[mode[2:] for mode in interaction_types if modes_for_vertex[mode]]}")
 
 # Plot stacked histogram
 bins = range(1, 21)
-plt.hist([pdg_counts_modes[mode] for mode in interaction_modes], bins=bins, stacked=True, label=interaction_modes)
+total_counts = sum([len(pdg_counts_modes[mode]) for mode in interaction_types])
+plt.hist([pdg_counts_modes[mode] for mode in interaction_types], bins=bins, stacked=True, color=[colors[mode] for mode in interaction_types], edgecolor='black', label=[f"{mode[2:]} ({len(pdg_counts_modes[mode])}, {len(pdg_counts_modes[mode])/total_counts*100:.2f}%)" for mode in interaction_types])
 plt.xlabel('CC Multiplicity')
 plt.ylabel('Number of Events')
 plt.title('Multiplicity Distribution (MiniRun4_RHC) by Interaction Modes')
