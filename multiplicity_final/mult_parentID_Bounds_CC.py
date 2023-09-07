@@ -9,7 +9,8 @@ Conditions of the code:
 5. Set `part_status` to 1 and filter data based on the valid `traj_ids` within the spatial bounds.
 6. For each unique `vertex_id` in the filtered data, extract corresponding `part_pdg` values from the Stack dataset.
 7. Count the number of `part_pdg` values for each `vertex_id`.
-8. Plot a histogram of the multiplicity using the counts of `part_pdg` values.
+8. Only select events where `isCC` is `True`.
+9. Plot a histogram of the multiplicity using the counts of `part_pdg` values.
 """
 
 import h5py
@@ -17,7 +18,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 base_path = "/pnfs/dune/tape_backed/users/mkramer/prod/MiniRun4/MiniRun4_1E19_RHC/MiniRun4_1E19_RHC.flow/FLOW"
-filenames = [f"{base_path}/MiniRun4_1E19_RHC.flow.{i:05}.FLOW.h5" for i in range(2)]
+filenames = [f"{base_path}/MiniRun4_1E19_RHC.flow.{i:05}.FLOW.h5" for i in range(1024)]
 
 # Define bounds
 Xnegbound, Xposbound = -67, +67
@@ -65,19 +66,20 @@ for idx, file in enumerate(filenames):
         
         # Group by vertex_id and append all part_pdg values
         for unique_vertex_id in np.unique(filtered_vertex_ids):
-            vertex_mask = filtered_vertex_ids == unique_vertex_id
-            pdg_array = filtered_part_pdgs[vertex_mask]
-            count = len(pdg_array)
-            pdg_counts.append(count)
-            
             # Extract the isCC value for the current vertex_id from the dictionary
             isCC_for_vertex = vertex_id_to_isCC.get(unique_vertex_id, False)  # Default to False if vertex_id not found
             
-            # Print the traj_id, part_pdg values, count, parent_id, and isCC value for the given vertex_id
-            traj_id_for_vertex = filtered_traj_ids[vertex_mask][0]
-            parent_id_for_traj = parent_ids_trajectories[np.where(traj_ids_trajectories == traj_id_for_vertex)[0][0]]
-            print(f"traj_id = {traj_id_for_vertex}; part_status = 1; vertex_id = {unique_vertex_id}; part_pdg = {list(pdg_array)}; count = {count}; parent_id = {parent_id_for_traj}; isCC = {isCC_for_vertex}")
-
+            # Only process vertices where isCC is True
+            if isCC_for_vertex:
+                vertex_mask = filtered_vertex_ids == unique_vertex_id
+                pdg_array = filtered_part_pdgs[vertex_mask]
+                count = len(pdg_array)
+                pdg_counts.append(count)
+                
+                # Print the traj_id, part_pdg values, count, parent_id, and isCC value for the given vertex_id
+                traj_id_for_vertex = filtered_traj_ids[vertex_mask][0]
+                parent_id_for_traj = parent_ids_trajectories[np.where(traj_ids_trajectories == traj_id_for_vertex)[0][0]]
+                #print(f"traj_id = {traj_id_for_vertex}; part_status = 1; vertex_id = {unique_vertex_id}; part_pdg = {list(pdg_array)}; count = {count}; parent_id = {parent_id_for_traj}; isCC = {isCC_for_vertex}")
 
 # Plot histogram
 entries = len(pdg_counts)
@@ -86,7 +88,7 @@ std_dev = np.std(pdg_counts)
 label_text = f"Entries: {entries}\nMean: {mean:.2f}\nStd Dev: {std_dev:.2f}"
 
 plt.hist(pdg_counts, bins=range(1, 21), label=label_text)
-plt.xlabel('Multiplicity')
+plt.xlabel('CC Multiplicity')
 plt.ylabel('Number of Events')
 plt.title('Multiplicity Distribution (MiniRun4_RHC)')
 plt.xticks(range(1, 21))  # Ensures that every integer between 1 and 21 inclusive is shown
