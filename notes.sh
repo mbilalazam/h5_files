@@ -17,12 +17,9 @@ wget https://portal.nersc.gov/project/dune/data/2x2/simulation/productions/MiniR
 ## Locations of PicoRun4_1E17_RHC Flow files (update after MiniRun4_RHC):
 FNAL: /pnfs/dune/tape_backed/users/mkramer/prod/PicoRun4/PicoRun4_1E17_RHC/PicoRun4_1E17_RHC.flow/FLOW
 Web: https://portal.nersc.gov/project/dune/data/2x2/simulation/productions/PicoRun4_1E17_RHC/PicoRun4_1E17_RHC.flow/FLOW/
-wget https://portal.nersc.gov/project/dune/data/2x2/simulation/productions/PicoRun4_1E17_RHC/PicoRun4_1E17_RHC.flow/FLOW/PicoRun4_1E17_FHC.flow.00000.FLOW.h5
-
+wget https://portal.nersc.gov/project/dune/data/2x2/simulation/productions/PicoRun4_1E17_RHC/PicoRun4_1E17_RHC.flow/FLOW/PicoRun4_1E17_RHC.flow.00000.FLOW.h5
 base_path = "/pnfs/dune/tape_backed/users/mkramer/prod/PicoRun4/PicoRun4_1E17_RHC/PicoRun4_1E17_RHC.flow/FLOW"
 filenames = [f"{base_path}/PicoRun4_1E17_RHC.flow.{i:05}.FLOW.h5" for i in range(10)]
-
-
 
 
 ## My Directory 
