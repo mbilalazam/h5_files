@@ -14,6 +14,16 @@ wget https://portal.nersc.gov/project/dune/data/2x2/simulation/productions/Micro
 ## To download multiple files from the MiniRun4 RHC link
 wget https://portal.nersc.gov/project/dune/data/2x2/simulation/productions/MiniRun4_1E19_RHC/MiniRun4_1E19_RHC.flow/FLOW/MiniRun4_1E19_RHC.flow.0000{0..11}.FLOW.h5
 
+## Locations of PicoRun4_1E17_RHC Flow files (update after MiniRun4_RHC):
+FNAL: /pnfs/dune/tape_backed/users/mkramer/prod/PicoRun4/PicoRun4_1E17_RHC/PicoRun4_1E17_RHC.flow/FLOW
+Web: https://portal.nersc.gov/project/dune/data/2x2/simulation/productions/PicoRun4_1E17_RHC/PicoRun4_1E17_RHC.flow/FLOW/
+
+base_path = "/pnfs/dune/tape_backed/users/mkramer/prod/PicoRun4/PicoRun4_1E17_RHC/PicoRun4_1E17_RHC.flow/FLOW"
+filenames = [f"{base_path}/PicoRun4_1E17_RHC.flow.{i:05}.FLOW.h5" for i in range(10)]
+
+
+
+
 ## My Directory 
 cd /dune/app/users/mazam/working_area/dunendlar_multiplicity/bilal_work/inProgress/MiniRun4_RHC
 
