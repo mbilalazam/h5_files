@@ -9,5 +9,8 @@ export LC_CTYPE=en_US.UTF-8
 # Source the DUNE software setup script
 source /grid/fermiapp/products/dune/setup_dune.sh
 
+# Setup Python3
+setup python v3_9_13
+
 # Move to
 cd /dune/app/users/mazam/production/MiniRun4_RHC
