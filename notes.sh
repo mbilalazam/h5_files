@@ -42,6 +42,10 @@ tar czvf data.tar.gz data.txt
 scp -r mazam@dunegpvm11.fnal.gov:<path_on_gpvm> <path_on_local_machine>
 scp -r mazam@dunegpvm11.fnal.gov:/dune/app/users/mazam/working_area/dunendlar_multiplicity/bilal_work/inProgress/MiniRun4_RHC/mult/2d/ppt/sep22 .
 
+## To copy an entire folder from my local machine to DUNE GPVM 
+scp -r /path/to/your/local/folder mazam@dunegpvm11.fnal.gov:/remote/destination/path
+
+
 
 ## To copy just one file from DUNE GPVM to my local machine
 scp mazam@dunegpvm11.fnal.gov:/dune/app/users/mazam/working_area/dunendlar_multiplicity/out_gen.root .
