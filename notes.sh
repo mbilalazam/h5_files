@@ -39,11 +39,11 @@ tar czvf data.tar.gz data.txt
 
 
 ## To copy an entire folder from DUNE GPVM to my local machine
-scp -r mazam@dunegpvm11.fnal.gov:<path_on_gpvm> <path_on_local_machine>
-scp -r mazam@dunegpvm11.fnal.gov:/dune/app/users/mazam/working_area/dunendlar_multiplicity/bilal_work/inProgress/MiniRun4_RHC/mult/2d/ppt/sep22 .
+scp -r mazam@dunegpvm13.fnal.gov:<path_on_gpvm> <path_on_local_machine>
+scp -r mazam@dunegpvm13.fnal.gov:/dune/app/users/mazam/working_area/dunendlar_multiplicity/bilal_work/inProgress/MiniRun4_RHC/mult/2d/ppt/sep22 .
 
 ## To copy some files ending on .h5 from DUNE GPVM to my local machine
-scp -r mazam@dunegpvm12.fnal.gov:/dune/data/users/drielsma/minirun4/output_ana/$(ls /dune/data/users/drielsma/minirun4/output_ana/*.h5 | shuf -n 100) /home/bilal/working/MLreco/output_ana/
+scp -r mazam@dunegpvm13.fnal.gov:/dune/data/users/drielsma/minirun4/output_ana/$(ls /dune/data/users/drielsma/minirun4/output_ana/*.h5 | shuf -n 100) /home/bilal/working/MLreco/output_ana/
 
 
 ## To copy an entire folder from my local machine to DUNE GPVM 
